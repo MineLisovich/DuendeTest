@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewData["Title"] = "Weather";
+}
+
+@model List<WeatherData>
+
+<h1>Weather</h1>
+
+<table>
+    @foreach (var obj in Model)
+    {
+        <tr>
+            <td>@obj.Date</td>
+            <td>@obj.Summary</td>
+            <td>@obj.TemperatureF</td>
+            <td>@obj.TemperatureC</td>
+        </tr>
+    }
+</table>
+
