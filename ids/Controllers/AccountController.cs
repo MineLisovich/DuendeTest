@@ -77,5 +77,12 @@ namespace ids.Controllers
                 }
             return View(model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Account");
+        }
     }
 }
