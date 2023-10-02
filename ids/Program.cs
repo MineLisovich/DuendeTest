@@ -8,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
 var assembly = typeof(ConfigIDS).Assembly.GetName().Name;
-builder.Services.AddRazorPages();
+//builder.Services.AddRazorPages();
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<ApplicationDbContext>(conf =>
 {
@@ -35,7 +36,11 @@ app.UseIdentityServer();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
-app.MapRazorPages().RequireAuthorization();
+//app.MapRazorPages().RequireAuthorization();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Account}/{action=Login}/{id?}");
+
 
 if (args.Contains("/seed"))
 {
