@@ -1,0 +1,10 @@
+﻿Add-Migration InitialIdentityServerPersistedGrantDbMigration -c PersistedGrantDbContext -o Data/Migrations/IdentityServer/PersistedGrantDb
+Add-Migration InitialIdentityServerConfigurationDbMigration -c ConfigurationDbContext -o Data/Migrations/IdentityServer/ConfigurationDb
+
+Add-Migration InitialIdentityServerMigration -c ApplicationDbContext -o Migrations/AppMigrations
+
+Update-database -Context ApplicationDbContext
+Update-database -Context PersistedGrantDbContext
+Update-database -Context ConfigurationDbContext
+
+seeddata: dotnet run bin/Debug/net6.0/ids /seed --project ids
