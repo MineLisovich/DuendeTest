@@ -1,5 +1,3 @@
-using Duende.IdentityServer.Models;
-using Duende.IdentityServer.Test;
 using ids;
 using ids.Database;
 using Microsoft.AspNetCore.Identity;

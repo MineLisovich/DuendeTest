@@ -1,15 +1,13 @@
-﻿using Duende.IdentityServer;
-using Duende.IdentityServer.Models;
-using Duende.IdentityServer.Test;
-using IdentityModel;
-using System.Security.Claims;
-using System.Text.Json;
-using static Duende.IdentityServer.Models.IdentityResources;
+﻿using Duende.IdentityServer.Models;
+
 
 namespace ids
 {
     public class ConfigIDS
     {
+        //IdentityResource - позволяет смоделировать область которая позволит клиентскому приложению
+        //просматривать под множеством утверждений(claim) о пользователе
+        //Profile() - позволяет видеть клиентскому приложению утверждение(claim) о пользователе (имя, фамилия и тд.)
         public static IEnumerable<IdentityResource> IdentityResources =>
             new IdentityResource[]
             {
@@ -21,12 +19,15 @@ namespace ids
                     UserClaims = new List<string> {"role"}
                 }
             };
+        //ApiScope - Области которые может использовать клиентское приложение
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
             {
                 new ApiScope("weatherApiResurs.read"),
                 new ApiScope("weatherApiResurs.write")
             };
+        //ApiResource - позволяет смоделировать доступ ко всему защищённому ресурсу.
+        //API с отдельными уровнями разрешений(облостями) к которым клиентское приложение может запросить доступ
         public static IEnumerable<ApiResource> ApiResources =>
             new ApiResource[]
             {
@@ -37,6 +38,7 @@ namespace ids
                     UserClaims = new List<string>{"role"}
                 }
             };
+        //Client - IdentityServer нужно знать каким клиентским приложениям можно использовать его (список приложений)
         public static IEnumerable<Client> Clients =>
             new[]
             {

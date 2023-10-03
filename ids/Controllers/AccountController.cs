@@ -20,19 +20,16 @@ namespace ids.Controllers
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IEventService _events;
         private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<IdentityUser> _userManager;       
 
         public AccountController (IIdentityServerInteractionService interaction,
             IEventService events, UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager,
             SignInManager<IdentityUser> signInManager)
         {
             _interaction = interaction;
             _events = events;
             _signInManager = signInManager;
             _userManager = userManager;
-            _roleManager = roleManager;
         }
         [HttpGet]
         public IActionResult Login(string returnUrl)
@@ -114,7 +111,7 @@ namespace ids.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseModel { Status = "Error", Message = "User creation failed! Please check user details and try again." });
             }
-            //User ROle
+            //добавление роли
             await _userManager.AddToRoleAsync(user, "User");
            
             result = _userManager.AddClaimsAsync(user, new Claim[]
@@ -128,9 +125,7 @@ namespace ids.Controllers
             {
                 throw new Exception(result.Errors.First().Description);
             }
-
             return RedirectToAction("Login", "Account");
-
         }
 
         [HttpGet]

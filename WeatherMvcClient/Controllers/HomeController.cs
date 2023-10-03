@@ -33,11 +33,14 @@ namespace WeatherMvcClient.Controllers
         public async Task<IActionResult> Weather()
         {
             using var client = new HttpClient();
-            //var token = await _tokenService.GetTokenAsync("weatherApiResurs.read");
-            var token = await HttpContext.GetTokenAsync("access_token");
 
-            //client.SetBearerToken(token.AccessToken);
+            //interactive
+            var token = await HttpContext.GetTokenAsync("access_token");  
             client.SetBearerToken(token);
+
+            //m2m 
+            //var token = await _tokenService.GetTokenAsync("weatherApiResurs.read");
+            //client.SetBearerToken(token.AccessToken);
 
             var result = await client.GetAsync("https://localhost:5445/WeatherForecast");
             if (result.IsSuccessStatusCode)
