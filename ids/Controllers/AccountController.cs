@@ -1,21 +1,19 @@
 ﻿using Duende.IdentityServer;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Services;
-using Duende.IdentityServer.Stores;
 using IdentityModel;
-using IdentityServerHost.Pages;
-using IdentityServerHost.Pages.Login;
 using ids.Models;
+using ids.Views.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using static IdentityModel.OidcConstants;
+
 
 namespace ids.Controllers
 {
-    [SecurityHeaders]
+
     [AllowAnonymous]
     public class AccountController : Controller
     {
