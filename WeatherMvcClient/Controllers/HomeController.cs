@@ -33,7 +33,7 @@ namespace WeatherMvcClient.Controllers
         public async Task<IActionResult> Weather()
         {
             using var client = new HttpClient();
-            // var token = await _tokenService.GetTokenAsync("weatherApiResurs.read");
+            //var token = await _tokenService.GetTokenAsync("weatherApiResurs.read");
             var token = await HttpContext.GetTokenAsync("access_token");
 
             //client.SetBearerToken(token.AccessToken);

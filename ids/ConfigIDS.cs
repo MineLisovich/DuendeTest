@@ -61,7 +61,7 @@ namespace ids
                     AllowOfflineAccess = true,
                     AllowedScopes = {"openid", "profile", "weatherApiResurs.read"},
                     RequirePkce = true,
-                    RequireConsent = true,
+                    RequireConsent = false,
                     AllowPlainTextPkce = false
                 }
             };

@@ -2,6 +2,7 @@
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
+using IdentityModel;
 using IdentityServerHost.Pages;
 using IdentityServerHost.Pages.Login;
 using ids.Models;
@@ -9,6 +10,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using static IdentityModel.OidcConstants;
 
 namespace ids.Controllers
 {
@@ -19,14 +22,19 @@ namespace ids.Controllers
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IEventService _events;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public AccountController (IIdentityServerInteractionService interaction,
-            IEventService events,
+            IEventService events, UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager,
             SignInManager<IdentityUser> signInManager)
         {
             _interaction = interaction;
             _events = events;
             _signInManager = signInManager;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
         [HttpGet]
         public IActionResult Login(string returnUrl)
@@ -76,6 +84,55 @@ namespace ids.Controllers
 
                 }
             return View(model);
+        }
+
+
+        [HttpGet]
+        public IActionResult Registration()
+        {
+            return View(new RegistrationModel());
+        }
+        [HttpPost]
+        public async Task<IActionResult> Registration (RegistrationModel model)
+        {
+            if (model.Username == null || model.Password == null || model.Email == null)
+            {
+                return View(model);
+            }
+            var userExists = await _userManager.FindByNameAsync(model.Username);
+            if (userExists != null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new ResponseModel { Status = "Error", Message = "User already exists!" });
+            }
+            IdentityUser user = new()
+            {
+                UserName = model.Username,
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseModel { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+            }
+            //User ROle
+            await _userManager.AddToRoleAsync(user, "User");
+           
+            result = _userManager.AddClaimsAsync(user, new Claim[]
+            {
+              new Claim(JwtClaimTypes.Name, model.Username),
+              new Claim(JwtClaimTypes.GivenName, model.Username),
+              new Claim(JwtClaimTypes.FamilyName, model.Username),
+              new Claim(JwtClaimTypes.WebSite, model.Email),
+            }).Result;
+            if (!result.Succeeded)
+            {
+                throw new Exception(result.Errors.First().Description);
+            }
+
+            return RedirectToAction("Login", "Account");
+
         }
 
         [HttpGet]
