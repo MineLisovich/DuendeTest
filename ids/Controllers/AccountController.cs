@@ -1,5 +1,6 @@
 ﻿using Duende.IdentityServer;
 using Duende.IdentityServer.Events;
+using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Services;
 using IdentityModel;
 using ids.Models;
@@ -127,11 +128,16 @@ namespace ids.Controllers
             }
             return RedirectToAction("Login", "Account");
         }
-
         [HttpGet]
+        public  IActionResult Logout(string url)
+        {
+           return View();
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
+            await _signInManager.SignOutAsync();   
             return RedirectToAction("Login", "Account");
         }
     }

@@ -1,16 +1,32 @@
+using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.Extensions.Logging;
 using WeatherMvcClient.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddW3CLogging(logging =>
+{
+    // Log all W3C fields
+    logging.LoggingFields = W3CLoggingFields.Date | W3CLoggingFields.Time | W3CLoggingFields.Method
+                            | W3CLoggingFields.Referer | W3CLoggingFields.Request;
+    
+
+
+    logging.FileSizeLimit = 5 * 1024 * 1024;
+    logging.RetainedFileCountLimit = 2;
+    logging.FileName = "LogFile_MVC_";
+    logging.LogDirectory = @"D:\logs";
+    logging.FlushInterval = TimeSpan.FromSeconds(2);
+});
 builder.Services.AddControllersWithViews();
 builder.Services.Configure<IdentityServerSettings>(builder.Configuration.GetSection("IdentityServerSettings"));
 builder.Services.AddSingleton<ITokenService, TokenService>();
 
-builder.Services.AddAuthentication(conf=>
+builder.Services.AddAuthentication(conf =>
 {
     conf.DefaultScheme = "cookie";
     conf.DefaultChallengeScheme = "oidc";
 
-}).AddCookie("cookie")
+}).AddCookie("cookie", conf => conf.ExpireTimeSpan = TimeSpan.FromDays(30))
   .AddOpenIdConnect("oidc", conf=>
   {
       conf.Authority = builder.Configuration["InteractiveServerSettings:AuthoriryUrl"];
@@ -24,7 +40,7 @@ builder.Services.AddAuthentication(conf=>
       conf.SaveTokens = true;
   });
 var app = builder.Build();
-
+app.UseW3CLogging();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

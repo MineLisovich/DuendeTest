@@ -11,6 +11,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.22" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NHibernate" Version="5.4.6" />
   </ItemGroup>
 
 </Project>

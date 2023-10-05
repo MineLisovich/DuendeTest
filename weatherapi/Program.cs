@@ -1,7 +1,19 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpLogging;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddW3CLogging(logging =>
+{
+    // Log all W3C fields
+    logging.LoggingFields = W3CLoggingFields.Date | W3CLoggingFields.Time | W3CLoggingFields.Method
+                            | W3CLoggingFields.Referer | W3CLoggingFields.Request;
 
+    logging.FileSizeLimit = 5 * 1024 * 1024;
+    logging.RetainedFileCountLimit = 2;
+    logging.FileName = "LogFile_API_";
+    logging.LogDirectory = @"D:\logs";
+    logging.FlushInterval = TimeSpan.FromSeconds(2);
+});
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -19,7 +31,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 var app = builder.Build();
-
+app.UseW3CLogging();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
